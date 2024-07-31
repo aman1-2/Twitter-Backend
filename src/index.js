@@ -10,9 +10,9 @@ const startAndStopServer = async () => {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
-    app.listen(PORT, () => {
+    app.listen(PORT, async () => {
         console.log(`Server Started at PORT:${PORT}`);
-        dbconnect();
+        await dbconnect();
     });
 }
 
