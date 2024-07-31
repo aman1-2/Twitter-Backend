@@ -6,14 +6,6 @@ const tweetSchema = new mongoose.Schema({
         max: [250, "Tweet Cannot have more than 250 characters."],
         required: true
     },
-    
-    /*A tweet can have multiple hashtags and a hashtag can have multiple tweets.*/
-    hashtags: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Hashtag'
-        }
-    ]
 }, { timestamps: true });
 
 const Tweet = mongoose.model('Tweet', tweetSchema);

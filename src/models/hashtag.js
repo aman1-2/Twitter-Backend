@@ -4,7 +4,7 @@ const hashtagSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
-        // index: true
+        unique: true
     },
 
     /*A tweet can have multiple hashtags and a hashtag can have multiple tweets.*/
