@@ -1,0 +1,57 @@
+const { TweetRepository, HashtagRepository } = require('../repository/index');
+
+class TweetService {
+    constructor() {
+        this.tweetRepository = new TweetRepository();
+        this.hashtagRepository = new HashtagRepository();
+    }
+
+    async create(data) {
+        try {
+            const content = data.content;
+            //This regex extracts the hashtag
+            //Forming array of tags from content.
+            const tags = content.match(/#[a-zA-Z0-9_]+/g).map((tag) => {
+                return tag.substring(1);
+            });
+
+            const tweet = await this.tweetRepository.create(data);
+            
+            //Finding alreday present tags from tags array and then only extracting title of tags and storing in an array.
+            let alreadyPresentTag = await this.hashtagRepository.findByName(tags);
+            let titleOfPresentTags = alreadyPresentTag.map((tag) => tag.title);
+            let newTags = tags.filter((tag) => !titleOfPresentTags.includes(tag)); //Now inside newTags we need only those tags to create already present shouldn't be there.
+            //Currently tags hold string of array created an object out of it so that we can pass it into bulkcreate.
+            newTags = newTags.map((tag) => {
+                return {title: tag, tweets: [tweet.id]}
+            });
+
+            await this.hashtagRepository.bulkCreate(newTags);
+
+            //Adding the current tweet inside the already present tags.
+            alreadyPresentTag.forEach((tag) => {
+                tag.tweets.push(tweet.id);
+                tag.save();
+            });
+
+            /**Points to create hashtags and here
+             * 1. Bulk Create in Mongoose
+             * 2. Filter title of hashtag based on multiple tags
+             * 3. How to add tweet ID inside all the hashtags
+             */
+            return tweet;
+        } catch (error) {
+            console.log("Error in service layer.");
+            throw error;
+        }
+    }
+};
+
+module.exports = TweetService;
+
+/**
+ * The tweet content might look like -> This is my #first #Tweet, really #excited.
+ * All the hashtags will be stored in tags array tag = [#first, #Tweet, #excited]
+ * Then modifying the tags array by removing the hashtag symbol and then storing the data in it.
+ * tag = [first, Tweet, excited]
+ */
