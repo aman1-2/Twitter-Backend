@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
 
-const { PORT } = require('./config/serverConfig');
-const dbconnect = require('./config/database');
-const apiRoutes = require('./routes/index');
+import {PORT} from './config/serverConfig.js';
+import { dbconnect } from './config/database.js';
+import apiRoutes from './routes/index.js';
 
 const startAndStopServer = async () => {
     const app = express();

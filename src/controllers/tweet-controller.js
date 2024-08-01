@@ -1,4 +1,4 @@
-const { TweetService } = require('../services/index');
+import { TweetService } from '../services/index.js';
 
 const tweetService = new TweetService();
 
@@ -22,6 +22,6 @@ const createTweet = async (req, res) => {
     }
 }
 
-module.exports = {
+export default {
     createTweet
-}
+};
