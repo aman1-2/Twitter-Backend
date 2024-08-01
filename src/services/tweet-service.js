@@ -11,15 +11,15 @@ class TweetService {
             const content = data.content;
             //This regex extracts the hashtag
             //Forming array of tags from content.
-            const tags = content.match(/#[a-zA-Z0-9_]+/g).map((tag) => {
+            const tags = new Set (content.match(/#[a-zA-Z0-9_]+/g).map((tag) => {
                 return tag.substring(1).toLowerCase();
-            });
+            }));
             const tweet = await this.tweetRepository.create(data);
             
             //Finding alreday present tags from tags array and then only extracting title of tags and storing in an array.
-            let alreadyPresentTag = await this.hashtagRepository.findByName(tags);
+            let alreadyPresentTag = await this.hashtagRepository.findByName(Array.from(tags));
             let titleOfPresentTags = alreadyPresentTag.map((tag) => tag.title);
-            let newTags = tags.filter((tag) => !titleOfPresentTags.includes(tag)); //Now inside newTags we need only those tags to create already present shouldn't be there.
+            let newTags = Array.from(tags).filter((tag) => !titleOfPresentTags.includes(tag)); //Now inside newTags we need only those tags to create already present shouldn't be there.
             //Currently tags hold string of array created an object out of it so that we can pass it into bulkcreate.
             newTags = newTags.map((tag) => {
                 return {title: tag, tweets: [tweet.id]}
