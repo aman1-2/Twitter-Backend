@@ -20,3 +20,16 @@
 - User Authentication
 
 - Every tweet might be having a hashtag.
+
+## Desigining the Like Model In a such a way that:
+- A like can be dropped on a Post as well as a like can be done on a comment.
+- Such that if we need to extend our feature and like some other products like stories then we can do it easily.
+
+### Like Schema
+1. one thing which we can keep in Like Schema could be on which model we want to like - whether its a Tweet or a Comment.
+2. Some people would think instead of having this onModel Property we can different properties as comment and tweet where we can store likes but it won't be feasible as in introduction to new feature we cann't every time just update the Schema.
+3. Now we have another property as likable in which based on the like ,
+whether we liked a tweet or comment we will store the tweet or comment Id in it. Because on object/document can be either on a tweet or a comment like.
+4. The third property is of the user that is which user we Liked it.
+
+- This type of model in Mongoose can be created with the help of refPath -> [text](https://mongoosejs.com/docs/populate.html#dynamic-refpath) 
