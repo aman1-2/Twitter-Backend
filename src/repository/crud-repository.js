@@ -8,8 +8,8 @@ class CrudRepository {
             const response = await this.model.create(data);
             return response;
         } catch (error) {
-            console.log("Error in the repository layer.")
-            throw new error ("Error found in the crud repository.");
+            console.log("Error in the repository layer.",error)
+            new error ("Error found in the crud repository.");
         }
     }
 
@@ -18,8 +18,8 @@ class CrudRepository {
             await this.model.findByIdAndDelete(id);
             return true;
         } catch (error) {
-            console.log("Error in the repository layer.")
-            throw new error ("Error found in the crud repository.");
+            console.log("Error in the repository layer.",error)
+            new error ("Error found in the crud repository.");
         }
     }
 
@@ -28,30 +28,30 @@ class CrudRepository {
             const response = await this.model.findByIdAndUpdate(id, data, {new: true});
             return response;
         } catch (error) {
-            console.log("Error in the repository layer.")
-            throw new error ("Error found in the crud repository.");
+            console.log("Error in the repository layer.",error)
+            new error ("Error found in the crud repository.");
         }
     }
 
     async get(id) {
         try {
-            const response = await this.model.findById(id).exec();
+            const response = await this.model.findById(id);
             return response;
             /*exec() will return a promise otherwise the normal mongoose query returns a thenable. */
         } catch (error) {
-            console.log("Error in the repository layer.")
-            throw new error ("Error found in the crud repository.");
+            console.log("Error in the repository layer.",error)
+            new error ("Error found in the crud repository.");
         }
     }
 
     async getAll() {
         try {
-            const response = await this.model.findById({}).exec();
+            const response = await this.model.find({});
             return response;
             /*exec() will return a promise otherwise the normal mongoose query returns a thenable. */
         } catch (error) {
-            console.log("Error in the repository layer.")
-            throw new error ("Error found in the crud repository.");
+            console.log("Error in the repository layer.",error)
+            new error ("Error found in the crud repository.");
         }
     }
 };

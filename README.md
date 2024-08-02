@@ -33,3 +33,6 @@ whether we liked a tweet or comment we will store the tweet or comment Id in it.
 4. The third property is of the user that is which user we Liked it.
 
 - This type of model in Mongoose can be created with the help of refPath -> [text](https://mongoosejs.com/docs/populate.html#dynamic-refpath) 
+
+## The toggleLike Feature inside the Like Service ->
+- Inside the toggle Like we need to pass the modelId -> Which is either the tweet or comment Id which is going to be Liked. With it we pass the modelType -> which tells what is being liked. That id will be only stored and at last UserId -> Which user liked id All these need to be passed in the parameter.
