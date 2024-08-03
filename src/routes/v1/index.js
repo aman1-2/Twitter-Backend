@@ -6,7 +6,10 @@ import LikeController from '../../controllers/like-controller.js';
 import CommentController from '../../controllers/comment-controller.js';
 
 router.post('/tweets', TweetController.createTweet);
+router.get('/tweet/:id', TweetController.getTweet);
+
 router.post('/likes/toggle', LikeController.toggleLike);
+
 router.post('/comments', CommentController.create);
 
 export default router;
