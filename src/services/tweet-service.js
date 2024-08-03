@@ -1,4 +1,5 @@
 import { TweetRepository, HashtagRepository } from '../repository/index.js';
+import { populateComment } from '../utils/commetHelper.js';
 
 class TweetService {
     constructor() {
@@ -40,7 +41,17 @@ class TweetService {
              */
             return tweet;
         } catch (error) {
-            console.log("Error in service layer.");
+            console.log("Error in Tweet service layer.");
+            throw error;
+        }
+    }
+
+    async get(id) {
+        try {
+            const tweet = await populateComment(id);
+            return tweet;
+        } catch (error) {
+            console.log("Error in Tweet service layer.");
             throw error;
         }
     }

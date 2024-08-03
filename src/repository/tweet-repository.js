@@ -11,7 +11,7 @@ class TweetRepository extends CrudRepository {
             const tweet = await Tweet.create(data)
             return tweet;
         } catch (error) {
-            console.log("Error in repository layer.");
+            console.log("Error in Tweet repository layer.");
             console.log(error);
         }
     }
@@ -21,7 +21,7 @@ class TweetRepository extends CrudRepository {
             const response = await Tweet.findById(id).populate({path: 'likes'}).exec();
             return response;
         } catch (error) {
-            console.log("Error in the likes repository layer");
+            console.log("Error in the Tweet repository layer");
             throw error;
         }
     }
