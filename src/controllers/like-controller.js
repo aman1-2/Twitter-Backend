@@ -8,7 +8,7 @@ const toggleLike = async(req, res) => {
         const modelType = req.query.modelType;
         const userId = req.body.userId;
 
-        const islike = await likeService.toggleLike(modelId,modelType,userId);
+        const islike = await likeService.toggleLike(modelId, modelType, userId);
         
         res.status(200).json({
             success: true,

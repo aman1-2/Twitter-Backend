@@ -36,3 +36,6 @@ whether we liked a tweet or comment we will store the tweet or comment Id in it.
 
 ## The toggleLike Feature inside the Like Service ->
 - Inside the toggle Like we need to pass the modelId -> Which is either the tweet or comment Id which is going to be Liked. With it we pass the modelType -> which tells what is being liked. That id will be only stored and at last UserId -> Which user liked id All these need to be passed in the parameter.
+
+## Comment Calculation could be like ->
+- We can either get directly the first comment layer counts on the post from the tweets array or if we want to have the total counts of the comments then they can be calculated through the virtuals.

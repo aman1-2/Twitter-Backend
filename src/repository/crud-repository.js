@@ -9,7 +9,7 @@ class CrudRepository {
             return response;
         } catch (error) {
             console.log("Error in the repository layer.",error)
-            new error ("Error found in the crud repository.");
+            throw error ("Error found in the crud repository.");
         }
     }
 
