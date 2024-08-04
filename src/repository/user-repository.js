@@ -6,9 +6,9 @@ class UserRepository extends CrudRepository {
         super(User);
     }
 
-    async findByEmail(email) {
+    async findBy(filter) {
         try {
-            const response = await User.findOne({email: email});
+            const response = await User.findOne({email: filter});
             return response;
         } catch (error) {
             console.log("Error in the User Repository layer.",error);

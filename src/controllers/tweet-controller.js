@@ -4,7 +4,11 @@ const tweetService = new TweetService();
 
 const createTweet = async (req, res) => {
     try {
-        const tweet = await tweetService.create(req.body);
+        const reqData = {
+            content: req.body.content,
+            user: req.user.id
+        };
+        const tweet = await tweetService.create(reqData);
         return res.status(201).json({
             success: true,
             data: tweet,

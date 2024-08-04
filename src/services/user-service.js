@@ -20,7 +20,7 @@ class UserService {
 
     async signIn(data) {
         try {
-            const user = await this.userRepository.findByEmail(data.email);
+            const user = await this.userRepository.findBy(data.email);
             if(!user) {
                 throw {
                     error: "No User Found, First register."
@@ -34,9 +34,9 @@ class UserService {
                     error: "Password in Incorrect."
                 };
             }
+            
             const newJWT = Token.createToken({email: user.email, id: user.id});
             return newJWT;
-
         } catch (error) {
             console.log("Error in the User SignIn service layer.",error);
             throw error;
