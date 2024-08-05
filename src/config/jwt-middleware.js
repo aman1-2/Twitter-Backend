@@ -6,7 +6,7 @@ const JwtStrategy = Jwt.Strategy;
 const ExtractJwt = Jwt.ExtractJwt;
 
 const option = {
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), //This says to ectract the token from the headers as a bearer token.
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: PASSPORT_KEY
 }
 
