@@ -1,9 +1,20 @@
+import upload from '../config/file-upload-s3-config.js';
 import { TweetService } from '../services/index.js';
 
 const tweetService = new TweetService();
 
+const singleUploder = upload.single('image'); //You can use it inside the createTweet to have a image upload. It is like a middleware
+
 const createTweet = async (req, res) => {
     try {
+        // singleUploder(req, res, function(err, data){
+        //     if(err) {
+        //         return res.status(300).json({error: err});
+        //     }
+        //     console.log("File Object: ",file);
+        //     console.log("Url: ", req.file.location);
+        //     return res.status(200).json({msg: 'Ok'});
+        // })
         const reqData = {
             content: req.body.content,
             user: req.user.id
