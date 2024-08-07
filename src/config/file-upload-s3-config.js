@@ -1,7 +1,7 @@
 import multer from 'multer';
 import multerS3 from 'multer-s3';
 import aws from 'aws-sdk';
-import { AWS_REGION, AWS_SECRET_ACCESS_KEY, AWS_ACCESS_KEY_ID, S3_BUCKET_NAME } from './serverConfig';
+import { AWS_REGION, AWS_SECRET_ACCESS_KEY, AWS_ACCESS_KEY_ID, S3_BUCKET_NAME } from './serverConfig.js';
 
 aws.config.update({
     region: AWS_REGION,
