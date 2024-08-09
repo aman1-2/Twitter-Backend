@@ -1,5 +1,6 @@
 import { TweetRepository, HashtagRepository } from '../repository/index.js';
 import { populateComment } from '../utils/commetHelper.js';
+import { ServiceError } from '../utils/errors/index.js';
 
 class TweetService {
     constructor() {
@@ -12,14 +13,14 @@ class TweetService {
             const content = data.content;
             //This regex extracts the hashtag
             //Forming array of tags from content.
-            const tags = new Set (content.match(/#[a-zA-Z0-9_]+/g));
-            if(!tags) {
-                tags.map((tag) => {
+            var tags = content.match(/#[a-zA-Z0-9_]+/g) || [];
+            if(tags.length > 0) {
+                tags = new Set (tags.map((tag) => {
                     return tag.substring(1).toLowerCase();
-                });
+                }));
             }
             const tweet = await this.tweetRepository.create(data);
-            
+
             //Finding alreday present tags from tags array and then only extracting title of tags and storing in an array.
             let alreadyPresentTag = await this.hashtagRepository.findByName(Array.from(tags));
             let titleOfPresentTags = alreadyPresentTag.map((tag) => tag.title);
@@ -44,8 +45,10 @@ class TweetService {
              */
             return tweet;
         } catch (error) {
-            console.log("Error in Tweet service layer.");
-            throw error;
+            if(error.name == "RepositoryError" || error.name == "ValidationError" || error.name == "ClientError") {
+                throw error;
+            }
+            throw new ServiceError();
         }
     }
 
@@ -54,8 +57,10 @@ class TweetService {
             const tweet = await populateComment(id);
             return tweet;
         } catch (error) {
-            console.log("Error in Tweet service layer.");
-            throw error;
+            if(error.name == "RepositoryError" || error.name == "ValidationError" || error.name == "ClientError" || error.name == "HelperFunctionError") {
+                throw error;
+            }
+            throw new ServiceError();
         }
     }
 };

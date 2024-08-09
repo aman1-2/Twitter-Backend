@@ -1,4 +1,6 @@
 import { LikeRepository, TweetRepository, CommentRepository } from "../repository/index.js";
+import { AppError, ServiceError } from "../utils/errors/index.js";
+import { StatusCodes } from "http-status-codes";
 
 class LikeService {
     constructor() {
@@ -14,7 +16,12 @@ class LikeService {
             } else if(modelType == 'Comment') {
                 var likeable = await this.commentRepository.get(modelId);
             } else {
-                throw new Error('unknown model type');
+                throw new AppError(
+                    "ClientError",
+                    "Made a Invalid Request",
+                    "The modelType send in the request is not acceptable.",
+                    StatusCodes.BAD_REQUEST
+                );
             }
 
             const exists = await this.likeRepository.findUserByLikeable({
@@ -41,8 +48,10 @@ class LikeService {
 
             return isAdded;
         } catch (error) {
-            console.log("Error in the like service layer.",error);
-            throw error;
+            if(error.name == "RepositoryError" || error.name == "ValidationError" || error.name == "ClientError") {
+                throw error;
+            }
+            throw new ServiceError();
         }
     }
 };

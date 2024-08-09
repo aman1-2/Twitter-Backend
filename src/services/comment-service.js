@@ -1,4 +1,6 @@
 import { CommentRepository, TweetRepository } from "../repository/index.js";
+import { AppError, ServiceError } from "../utils/errors/index.js";
+import { StatusCodes } from "http-status-codes";
 
 class CommentService {
     constructor() {
@@ -13,7 +15,12 @@ class CommentService {
             } else if(modelType == 'Comment') {
                 var commentable = await this.commentRepository.get(modelId);
             } else {
-                throw new error ("Unknown Model Encountered");
+                throw new AppError(
+                    "ClientError",
+                    "Made a Invalid Request",
+                    "The modelType send in the request is not acceptable.",
+                    StatusCodes.BAD_REQUEST
+                );
             }
 
             //Storing the parent tweet on which comment is made.
@@ -40,8 +47,10 @@ class CommentService {
 
             return newComment;
         } catch (error) {
-            console.log("Error occured inside the comment service layer.", error);
-            throw error;
+            if(error.name == "RepositoryError" || error.name == "ValidationError" || error.name == "ClientError") {
+                throw error;
+            }
+            throw new ServiceError();
         }
     }
 };

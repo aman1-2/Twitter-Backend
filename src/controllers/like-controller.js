@@ -1,4 +1,5 @@
 import { LikeService } from "../services/index.js";
+import { StatusCodes } from "http-status-codes";
 
 const likeService = new LikeService();
 
@@ -10,19 +11,18 @@ const toggleLike = async(req, res) => {
 
         const islike = await likeService.toggleLike(modelId, modelType, userId);
         
-        res.status(200).json({
+        res.status(StatusCodes.CREATED).json({
             success: true,
             isLiked: islike,
             message: "Toggle Like Operation done.",
             err: {} 
         });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({
+        res.status(error.statusCode).json({
             success: false,
             data: {},
-            message: "Something went wrong in Toggle Like Operation.",
-            err: error 
+            message: error.message,
+            err: error.explanation 
         });
     }
 }

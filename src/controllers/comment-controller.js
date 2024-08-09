@@ -1,4 +1,5 @@
 import { CommentService } from "../services/index.js";
+import { StatusCodes } from "http-status-codes";
 
 const commentService = new CommentService();
 
@@ -11,19 +12,18 @@ const create = async (req, res) => {
 
         const comment = await commentService.create(modelId, modelType, userId, content);
 
-        return res.status(201).json({
+        return res.status(StatusCodes.CREATED).json({
             success: true,
             data: comment,
             message: "Successfully Created a Comment.",
             err: {}
         });
     } catch (error) {
-        console.log("Error occured in comment controller layer.", error);
-        return res.status(500).json({
+        return res.status(error.statusCode).json({
             success: false,
             data: {},
-            message: "Error occured while creating a Comment.",
-            err: error
+            message: error.message,
+            err: error.explanation
         });
     }
 }

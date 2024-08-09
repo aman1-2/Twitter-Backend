@@ -1,5 +1,6 @@
 import upload from '../config/file-upload-s3-config.js';
 import { TweetService } from '../services/index.js';
+import { StatusCodes } from 'http-status-codes';
 
 const tweetService = new TweetService();
 
@@ -9,7 +10,7 @@ const createTweet = async (req, res) => {
     try {
         // singleUploder(req, res, function(err, data){
         //     if(err) {
-        //         return res.status(300).json({error: err});
+        //         return res.status(500).json({error: err});
         //     }
         //     console.log("File Object: ",file);
         //     console.log("Url: ", req.file.location);
@@ -19,20 +20,26 @@ const createTweet = async (req, res) => {
             content: req.body.content,
             user: req.user.id
         };
+
+        if(!reqData.user || !reqData.content) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                success: false,
+                message: "Content is must for Tweet Creation."
+            });
+        }
         const tweet = await tweetService.create(reqData);
-        return res.status(201).json({
+        return res.status(StatusCodes.OK).json({
             success: true,
             data: tweet,
             message: "Successfully Created a new Tweet.",
             err: {}
         });
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({
+        return res.status(error.statusCode).json({
             success: false,
             data: {},
-            message: "Unable to Create a Tweet.",
-            err: error
+            message: error.message,
+            err: error.explanation
         });
     }
 }
@@ -47,12 +54,11 @@ const getTweet = async (req, res) => {
             err: {}
         });
     } catch (error) {
-        console.log("Error in the tweet Controller layer.",error);
-        return res.status(500).json({
+        return res.status(error.statusCode).json({
             success: false,
             data: {},
-            message: "Error while fetching the Tweet Detail.",
-            err: error
+            message: error.message,
+            error: error.explanation
         });
     }
 }

@@ -1,6 +1,8 @@
 import Jwt from 'passport-jwt';
 import { PASSPORT_KEY } from './serverConfig.js';
 import { User } from '../models/index.js';
+import { AppError } from '../utils/errors/index.js';
+import { StatusCodes } from 'http-status-codes';
 
 const JwtStrategy = Jwt.Strategy;
 const ExtractJwt = Jwt.ExtractJwt;
@@ -23,6 +25,11 @@ export const passportAuth = (passport) => {
         }));
     } catch (error) {
         console.log("Error faced within the passport auth jwt-middleware.",error);
-        throw error;
+        new AppError(
+            "jwt-MiddlewarePassortAuthError",
+            "Passport Authentication Error",
+            "Unable to implement a Jwt strategy to make a succefull login for user",
+            StatusCodes.INTERNAL_SERVER_ERROR
+        );
     }
 }

@@ -1,4 +1,5 @@
 import { UserService } from "../services/index.js";
+import { StatusCodes } from "http-status-codes";
 
 const userService = new UserService();
 
@@ -9,21 +10,26 @@ const signUp = async(req, res) => {
             password: req.body.password,
             name: req.body.name
         }
-        const newUser = userService.signUp(reqData);
+        if(!reqData.email || !reqData.password || !reqData.name) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                success: false,
+                message: "Name, email, Password must be provided for a User Creation."
+            });
+        }
+        const newUser = await userService.signUp(reqData);
         
-        return res.status(201).json({
+        return res.status(StatusCodes.CREATED).json({
             success: true,
             data: newUser,
             message: "Successfully Created a User.",
             err: {}
         });
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({
+        return res.status(error.statusCode).json({
             success: false,
             data: {},
-            message: "Unable to register you.",
-            err: error
+            message: error.message,
+            err: error.explanation
         });
     }
 }
@@ -36,18 +42,18 @@ const signIn = async(req, res) => {
         }
         const token = await userService.signIn(reqData);
         
-        return res.status(200).json({
+        return res.status(StatusCodes.OK).json({
             success: true,
             data: token,
             message: "User sign in successfully",
             err: {}
         });
     } catch (error) {
-        return res.status(500).json({
+        return res.status(error.statusCode).json({
             success: false,
             data: {},
-            message: "Unable to Sign in User.",
-            err: error
+            message: error.message,
+            err: error.explanation
         });
     }
 }

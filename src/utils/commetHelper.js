@@ -1,4 +1,5 @@
 import { TweetRepository } from "../repository/index.js";
+import { AppError } from "./errors/index.js";
 
 const tweetRepository = new TweetRepository();
 
@@ -8,8 +9,14 @@ export async function populateComment(id) {
         await Promise.all(tweet.comments.map(populateNestedComments));
         return tweet;
     } catch (error) {
-        console.log("Error in the comment helper function.");
-        console.log(error);
+        if(error.name == "ClientError") {
+            throw error;
+        }
+        throw new AppError(
+            "HelperFunctionError",
+            "Comment Helper Faced an Issue",
+            "Error occured while populating the comments of a tweet."
+        );
     }
 }
 
@@ -18,7 +25,10 @@ async function populateNestedComments(comment) {
         await comment.populate({ path: 'comments' });
         await Promise.all(comment.comments.map(populateNestedComments));
     } catch (error) {
-        console.log("Error in the comment helper function.");
-        console.log(error);
+        throw new AppError(
+            "HelperFunctionError",
+            "Comment Helper Faced an Issue",
+            "Error occured while populating the comments of a comments."
+        );
     }
 }

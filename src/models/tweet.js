@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const tweetSchema = new mongoose.Schema({
     content: {
         type: String,
-        max: [250, "Tweet Cannot have more than 250 characters."],
+        maxLength: [250, "Tweet Cannot have more than 250 characters."],
         required: true
     },
 

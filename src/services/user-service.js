@@ -1,6 +1,8 @@
 import { UserRepository } from "../repository/index.js";
 import bcrypt from 'bcrypt';
 import Token from "../utils/tokenHelper.js";
+import { AppError, ServiceError } from "../utils/errors/index.js";
+import { StatusCodes } from "http-status-codes";
 
 class UserService {
     constructor() {
@@ -13,8 +15,10 @@ class UserService {
             const user = await this.userRepository.create(data);
             return user;
         } catch (error) {
-            console.log("Error in the User service layer.");
-            throw error;
+            if(error.name == "RepositoryError" || error.name == "ValidationError" || error.name == "ClientError") {
+                throw error;
+            }
+            throw new ServiceError();
         }
     }
 
@@ -22,24 +26,32 @@ class UserService {
         try {
             const user = await this.userRepository.findBy(data.email);
             if(!user) {
-                throw {
-                    error: "No User Found, First register."
-                };
+                throw new AppError(
+                    "UserNotFound",
+                    "User Not Available",
+                    "You aren't registred. Firstly Create a account",
+                    StatusCodes.NOT_FOUND
+                );
             }
 
             const encryptedPassword = user.password;
             const passwordMatch = this.verifyPassword(data.password, encryptedPassword);
             if(!passwordMatch) {
-                throw {
-                    error: "Password in Incorrect."
-                };
+                throw new AppError(
+                    "PasswordError",
+                    "Password Verification Failed",
+                    "Password you entered didn't matched. Please try again.",
+                    StatusCodes.UNPROCESSABLE_ENTITY
+                );
             }
             
             const newJWT = Token.createToken({email: user.email, id: user.id});
             return newJWT;
         } catch (error) {
-            console.log("Error in the User SignIn service layer.",error);
-            throw error;
+            if(error.name == "RepositoryError" || error.name == "ValidationError" || error.name == "PasswordError" || error.name == "UserNotFound" || error.name == "ClientError" || error.name == "PasswordVerficationError" || error.name == "TokenHelperError") {
+                throw error;
+            }
+            throw new ServiceError();
         }
     }
 
@@ -47,8 +59,12 @@ class UserService {
         try {
             return bcrypt.compareSync(plainPassword, encryptedPassword);
         } catch (error) {
-            console.log("Error while verifying the user password.");
-            throw error;
+            throw new AppError(
+                "PasswordVerficationError",
+                "Error Occured in verifying password.",
+                "Error in User Service layer while password verification.",
+                StatusCodes.INTERNAL_SERVER_ERROR
+            );
         }
     }
 
